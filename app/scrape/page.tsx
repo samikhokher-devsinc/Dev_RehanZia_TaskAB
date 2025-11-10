@@ -1,6 +1,7 @@
 'use client'
 import { useState } from 'react'
 import { FiGlobe, FiDownload, FiAlertCircle, FiCheckCircle } from 'react-icons/fi'
+import { scrapeClient } from '../../lib/services/scrapeClient'
 
 export default function ScrapePage() {
   const [url, setUrl] = useState('')
@@ -18,12 +19,10 @@ export default function ScrapePage() {
 
     setLoading(true)
     try {
-      const res = await fetch(`/api/scrape?url=${encodeURIComponent(u)}`)
-      const data = await res.json()
-      if (!res.ok) return setError(data.error || 'Scraping failed')
+      const data = await scrapeClient(u)
       setResult(data)
-    } catch {
-      setError('Network error occurred')
+    } catch (err: any) {
+      setError(err?.message || 'Network error occurred')
     } finally {
       setLoading(false)
     }

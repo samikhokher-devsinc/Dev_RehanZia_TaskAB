@@ -1,6 +1,7 @@
 'use client'
 import { useState, useRef } from 'react'
 import { FiSearch, FiFileText, FiAlertTriangle, FiZap, FiBarChart2, FiCpu } from 'react-icons/fi'
+import { searchClient } from '../lib/services/searchClient'
 
 export default function SearchPage() {
   const [query, setQuery] = useState('')
@@ -21,18 +22,11 @@ export default function SearchPage() {
 
     setLoading(true)
     try {
-      const res = await fetch('/api/search', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query: q })
-      })
-      const data = await res.json()
-      if (!res.ok) return setError(data.error || 'Search analysis failed')
-
+      const data = await searchClient(q)
       setResults(data.results || [])
-      setSummary(data.summary || null) 
-    } catch {
-      setError('Network connectivity issue detected')
+      setSummary(data.summary || null)
+    } catch (err: any) {
+      setError(err?.message || 'Network connectivity issue detected')
     } finally {
       setLoading(false)
     }
