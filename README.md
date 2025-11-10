@@ -96,7 +96,7 @@ GET /api/scrape?url=https://www.daraz.pk/products/lipton-yellow-label-tea-430g-x
 1. Clone the repository:
 
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/order-of-the-owl/Dev_RehanZia_TaskAB
 cd <repo-directory>
 ```
 
