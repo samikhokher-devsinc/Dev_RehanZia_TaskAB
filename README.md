@@ -1,36 +1,197 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Mini Full-Stack Search and Micro Scraper
 
-## Getting Started
+This project is a full-stack application built with **Next.js (App Router) and TypeScript**, designed to demonstrate two core functionalities:
 
-First, run the development server:
+1. **Mini Search Engine for FAQs** – Search a local dataset of frequently asked questions with relevance scoring and snippet summarization.
+2. **Micro Scraper** – Extract basic information from web pages (title, meta description, first H1) using **Playwright** in a headless browser.
+
+Tailwind CSS is used for clean and responsive UI.
+
+---
+
+## Project Structure
+
+| Folder/File                          | Description                                                  |
+| ------------------------------------ | ------------------------------------------------------------ |
+| `/app/layout.tsx`                    | Common layout with tabs to switch between Search and Scraper |
+| `/app/page.tsx`                      | Search page for FAQ queries                                  |
+| `/app/scrape/page.tsx`               | Scraper page for URL input                                   |
+| `/api/search/route.ts`               | API endpoint for searching FAQs                              |
+| `/api/scrape/route.ts`               | API endpoint for scraping webpages                           |
+| `/lib/repositories/faqRepository.ts` | Repository pattern to access FAQ dataset                     |
+| `/lib/services/scraperService.ts`    | Scraper service using Playwright                             |
+| `/data/faqs.json`                    | Local dataset of FAQs                                        |
+| `/tests`                             | Basic smoke tests for APIs                                   |
+| `globals.css`                        | Tailwind global styles                                       |
+
+---
+
+## Features and Functionality
+
+### Search FAQs
+
+* Case-insensitive search across FAQ titles and body, including special characters (% > + etc.)
+* Top 3 results returned based on relevance score
+* Snippet preview of FAQ body
+* Combined summary of top matches
+* Sources array to indicate which FAQ IDs contributed to summary
+* Error handling for empty queries or no matches
+
+**Example Request:**
+
+```
+POST /api/search
+Content-Type: application/json
+
+{
+  "query": "trust badges"
+}
+```
+
+**Example Response:**
+
+```json
+{
+  "results": [
+    {
+      "id": "1",
+      "title": "Trust badges near CTA",
+      "snippet": "Adding trust badges near the primary CTA increased signups by 12%."
+    }
+  ],
+  "summary": "Trust badges near CTA: Adding trust badges near the primary CTA increased signups by 12%",
+  "sources": ["1"]
+}
+```
+
+---
+
+### Micro Scraper
+
+* Extracts **title**, **meta description**, and **first H1** from any valid URL
+* Handles optional custom user-agent for blocked pages
+* Timeout and error handling for invalid URLs, timeouts, or general scraping failure
+* Headless scraping using Playwright, compatible with server environments
+
+**Example Request:**
+
+```
+GET /api/scrape?url=https://www.daraz.pk/products/lipton-yellow-label-tea-430g-x-olpers-250ml-i926936225-s3983603898.html?scm=1007.51610.379274.0&pvid=c88d0e06-309d-4c0c-aa99-392e5659353d&search=flashsale&spm=a2a0e.tm80335142.FlashSale.d_926936225
+```
+
+**Example Response:**
+
+```json
+{
+  "title": "Daraz Product Example",
+  "metaDescription": "This is a sample product description from Daraz.",
+  "h1": "Product Name",
+  "status": 200
+}
+```
+---
+
+## Setup Instructions
+
+1. Clone the repository:
+
+```bash
+git clone <your-repo-url>
+cd <repo-directory>
+```
+
+2. Install dependencies:
+
+```bash
+npm install
+```
+
+3. Ensure Playwright browsers are installed:
+
+```bash
+npx playwright install
+```
+
+4. Run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+5. Open in your browser:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+http://localhost:3000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+6. Build for production:
 
-## Learn More
+```bash
+npm run build
+npm start
+```
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Scripts
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| Script          | Description                                                 |
+| --------------- | ----------------------------------------------------------- |
+| `npm run dev`   | Start development server                                    |
+| `npm run build` | Build production version                                    |
+| `npm start`     | Run production server                                       |
+| `npm run lint`  | Run ESLint checks                                           |
+| `postinstall`   | Install Playwright browsers automatically after npm install |
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Basic Test Cases
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Located in `/tests` folder:
+
+* **Search API Test:** Checks if query "trust badges" returns expected top result.
+* **Scraper API Test:** Checks if scraping `https://example.com` returns a title and status 200.
+
+Run tests:
+
+```bash
+node tests/search.test.js
+node tests/scraper.test.js
+```
+
+## CI/CD Pipeline (GitHub Actions)
+
+`.github/workflows/ci.yml` handles:
+
+1. Checkout code
+2. Setup Node.js 20
+3. Install dependencies and Playwright browsers
+4. Build project
+5. Run smoke tests for Search and Scraper
+6. Build Docker image after tests pass
+
+This ensures **automated testing and deployment readiness** on every push or pull request.
+
+---
+
+## Assumptions
+
+* Local JSON dataset is static; no external database required
+* Maximum 3 results returned for search queries
+* Special characters are searchable in FAQ queries
+* Playwright scraping runs in Node.js environment only
+* Error handling is implemented for empty queries, invalid URLs, and timeouts
+* Tailwind CSS provides responsive UI
+* Postinstall ensures Playwright browsers are available for all environments
+
+---
+
+## Notes
+
+* Uses **repository and service patterns** for scalability and maintainability
+* Layout uses **tab-based UI** for switching between Search and Scraper tasks
+* Loading, empty, and error states handled gracefully for better UX
+* Combined summary in Search endpoint aggregates top results in 2–3 sentences
+
+This README provides a **complete guide** for setup, testing, Docker, CI/CD, and functional usage. It is professional, human-readable, and ready for client presentation.
+# Dev_RehanZia_TaskAB
