@@ -193,6 +193,5 @@ This ensures **automated testing and deployment readiness** on every push or pul
 * Loading, empty, and error states handled gracefully for better UX
 * Combined summary in Search endpoint aggregates top results in 2–3 sentences
 
-This README provides a **complete guide** for setup, testing, Docker, CI/CD, and functional usage. It is professional, human-readable, and ready for client presentation.
-# Dev_RehanZia_TaskAB
+This README provides a **complete guide** for setup, testing, Docker, CI/CD, and functional usage.
 # Dev_RehanZia_TaskAB
