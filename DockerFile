@@ -29,5 +29,5 @@ RUN npm ci --omit=dev
 
 EXPOSE 3000
 
-# This assumes your package.json has: "start": "next start"
+# This assumes your package.json has: "start": "next start" .
 CMD ["npm", "start"]
