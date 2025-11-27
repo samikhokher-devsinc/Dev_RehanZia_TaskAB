@@ -36,6 +36,12 @@ jobs:
       - name: Build project
         run: npm run build
 
+      - name: Start server
+        run: npm start &
+      
+      - name: Wait for server to be up
+        run: npx wait-on http://localhost:3000/api/search
+
       - name: Run Search API test
         run: node tests/search.test.js
 
