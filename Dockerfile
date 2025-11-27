@@ -23,6 +23,7 @@ ENV NODE_ENV=production
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/package*.json ./
+COPY --from=builder /app/data ./data 
 
 # Install only prod dependencies
 RUN npm ci --omit=dev
@@ -31,3 +32,4 @@ EXPOSE 3000
 
 # This assumes your package.json has: "start": "next start" . ss
 CMD ["npm", "start"]
+    
