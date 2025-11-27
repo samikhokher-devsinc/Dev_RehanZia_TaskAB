@@ -52,3 +52,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ results: top, summary, sources })
 }
+
+export async function GET() {
+  return new Response(JSON.stringify({ status: 'ok' }), { status: 200 });
+}
