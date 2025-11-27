@@ -37,7 +37,10 @@ jobs:
         run: npm run build
 
       - name: Run Search API test
-        run: node tests/search.test.js & sleep 5
+        run: node tests/search.test.js & sleep
+
+      - name: Wait before next test
+        run: sleep 5
 
       - name: Run Scraper API test
         run: node tests/scraper.test.js & sleep 
