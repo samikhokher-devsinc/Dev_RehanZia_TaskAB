@@ -15,7 +15,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     Data Intelligence Platform
                   </h1>
                   <p className="text-slate-400 text-lg font-light">
-                    Advanced search analytics & web extraction suite
+                    Advanced search analytics & web extraction suite case
                   </p>
                 </div>
                 <div className="flex items-center space-x-2 bg-slate-800/50 rounded-2xl px-4 py-2 border border-slate-700">
